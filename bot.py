@@ -4,6 +4,7 @@ import irc
 import os
 from dotenv import load_dotenv
 from clip import download_twitch_clip
+from functions import roll_dice
 # Load variables from the .env file
 load_dotenv()
 
@@ -26,6 +27,7 @@ client.join(CHANNEL_NAME)
 # Event handler for incoming messages
 def on_message(sender, message):
     if sender != BOT_USERNAME:  # Ignore messages from the bot itself
+        command_name = message.strip()
         # Check if the message starts with the bot's username
         if message.startswith(f'@{BOT_USERNAME}'):
             # Extract the Twitch clip URL from the message
@@ -53,14 +55,16 @@ def on_message(sender, message):
                 #function to get the download link
                 download_link = download_twitch_clip(actual_clip_id)
                 client.send_message(CHANNEL_NAME, f"Click the link below to download the converted video:\n{download_link}")
-
-
             else:
                 client.send_message(CHANNEL_NAME, 'No valid Twitch clip URL found in the message')
-# Function called when the "dice" command is issued
-def roll_dice():
-    sides = 6
-    return random.randint(1, sides)
+        #Dice command        
+        elif command_name == '!dice':
+            num = roll_dice()
+            client.send_message(CHANNEL_NAME, f'You rolled a {num}')
+            print(f'* Executed {command_name} command')
+        else:
+            print(f'* Unknown command {command_name}')
+            
 
 
 # Set the message event handler
