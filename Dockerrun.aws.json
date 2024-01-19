@@ -1,0 +1,9 @@
+{
+    "AWSEBDockerrunVersion": "1",
+    "Image": {
+      "Name": "kianisnotavailable/twitch_bot:latest",
+      "Update": "true"
+    }
+    
+  }
+  
