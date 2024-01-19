@@ -18,10 +18,10 @@ token = os.getenv('MY_OAUTH_TOKEN')
 
 # SQL database configuration
 db_config = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': os.getenv('MY_SQL_PASSWORD'),
-    'database': 'twitch_bot_game',
+    'host': os.getenv('MY_RDS_ENDPOINT'),
+    'user': os.getenv('MY_RDS_USERNAME'),
+    'password': os.getenv('MY_RDS_PASSWORD'),
+    'database': os.getenv('MY_RDS_DATABASE')
 }
 
 print("Bot has started and connected to Twitch IRC!")
@@ -63,7 +63,7 @@ def on_message(user, msg):
         db_connection.commit()
         print(f"User {sender_username} added to the database.")
 
-    # If the command is known, let's execute it
+    # Commands
     if command_name == '!gift':
         cursor.execute('SELECT points FROM user_data WHERE username = %s', (sender_username,))
         result = cursor.fetchone()
@@ -102,7 +102,7 @@ def on_message(user, msg):
     else:
         irc.send(f'PRIVMSG {channel} :* Unknown command {command_name}\r\n'.encode('utf-8'))
 
-# Function to execute when the "spin" command is issued
+# Function to execute the "spin" command 
 def spin(sender_username, points):
     cursor.execute('SELECT points FROM user_data WHERE username = %s', (sender_username,))
     result = cursor.fetchone()
