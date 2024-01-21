@@ -14,7 +14,13 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Configure AWS CLI
-      run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} && aws configure set region eu-north-1
+      run: |
+        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws configure set region eu-north-1
+
+    - name: Get Commit SHA
+      run: COMMIT_SHA=$(git rev-parse --short HEAD) && echo "COMMIT_SHA=${COMMIT_SHA}" >> $GITHUB_ENV
 
     - name: Zip application code
       run: zip -r application.zip .
@@ -23,11 +29,7 @@ jobs:
       run: aws s3 cp application.zip s3://twitchbot-bucket/application.zip
 
     - name: Create Elastic Beanstalk application version
-      run: |
-        COMMIT_SHA=$(git rev-parse --short HEAD)
-        aws elasticbeanstalk create-application-version --application-name freeleetcodecamp --version-label $COMMIT_SHA --source-bundle S3Bucket=twitchbot-bucket,S3Key=application.zip
+      run: aws elasticbeanstalk create-application-version --application-name freeleetcodecamp --version-label ${{ env.COMMIT_SHA }} --source-bundle S3Bucket=twitchbot-bucket,S3Key=application.zip
 
     - name: Update Elastic Beanstalk environment
-      run: |
-        COMMIT_SHA=$(git rev-parse --short HEAD)
-        aws elasticbeanstalk update-environment --application-name freeleetcodecamp --environment-name Twitchbot-env --version-label $COMMIT_SHA
+      run: aws elasticbeanstalk update-environment --application-name freeleetcodecamp --environment-name Twitchbot-env --version-label ${{ env.COMMIT_SHA }}
