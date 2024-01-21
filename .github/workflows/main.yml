@@ -32,4 +32,4 @@ jobs:
       run: |
         COMMIT_SHA=$(git rev-parse --short HEAD)
         aws elasticbeanstalk create-application-version --application-name freeleetcodecamp --version-label $COMMIT_SHA --source-bundle S3Bucket=twitchbot-bucket,S3Key=Dockerrun.aws.json
-        aws elasticbeanstalk update-environment --application-name freeleetcodecamp --environment-name twitchbot --version-label $COMMIT_SHA
+        aws elasticbeanstalk update-environment --application-name freeleetcodecamp --environment-name Twitchbot-env --version-label $COMMIT_SHA
