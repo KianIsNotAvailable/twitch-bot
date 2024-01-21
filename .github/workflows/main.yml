@@ -6,30 +6,33 @@ on:
       - main 
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Zip Python code
+      run: zip -r python_code.zip .
+
+    - name: Upload Python code to S3
+      run: aws s3 cp python_code.zip s3://twitchbot-bucket/python_code.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    needs: build
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
     - name: Configure AWS CLI
-      run: |
-        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws configure set region eu-north-1
-
-    - name: Get Commit SHA
-      run: COMMIT_SHA=$(git rev-parse --short HEAD) && echo "COMMIT_SHA=${COMMIT_SHA}" >> $GITHUB_ENV
-
-    - name: Zip application code
-      run: zip -r application.zip .
-
-    - name: Upload application to S3
-      run: aws s3 cp application.zip s3://twitchbot-bucket/application.zip
+      run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} && aws configure set region eu-north-1
 
     - name: Update Elastic Beanstalk environment
       run: |
         COMMIT_SHA=$(git rev-parse --short HEAD)
-        aws elasticbeanstalk create-application-version --application-name freeleetcodecamp --version-label $COMMIT_SHA --source-bundle S3Bucket=twitchbot-bucket,S3Key=Dockerrun.aws.json
+        aws elasticbeanstalk create-application-version --application-name freeleetcodecamp --version-label $COMMIT_SHA --source-bundle S3Bucket=twitchbot-bucket,S3Key=python_code.zip
         aws elasticbeanstalk update-environment --application-name freeleetcodecamp --environment-name Twitchbot-env --version-label $COMMIT_SHA
