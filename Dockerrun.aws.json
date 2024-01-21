@@ -1,9 +1,13 @@
 {
-    "AWSEBDockerrunVersion": "1",
-    "Image": {
-      "Name": "kianisnotavailable/twitch_bot:latest",
-      "Update": "true"
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "kianisnotavailable/twitch_bot:latest",
+    "Update": "true"
+  },
+  "Ports": [
+    {
+      "ContainerPort": 3000,
+      "HostPort": 3000
     }
-    
-  }
-  
+  ]
+}
