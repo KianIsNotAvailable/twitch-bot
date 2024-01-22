@@ -3,7 +3,7 @@
     "containerDefinitions": [
       {
         "name": "bot",
-        "image": "bot:latest",
+        "image": "kianisnotavailable/twitch_bot:latest",
         "essential": true,
         "memory": 128,
         "portMappings": [
@@ -19,4 +19,5 @@
       }
     ]
   }
+  
   
