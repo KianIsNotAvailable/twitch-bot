@@ -18,8 +18,15 @@ jobs:
 
     - name: Build and push Docker image
       run: |
+        # Build the Docker image
         docker build -t bot .
+        
+        # Tag the Docker image with the desired repository name
+        docker tag bot kianisnotavailable/twitch_bot:latest
+    
+        # Push the Docker image to Docker Hub
         docker push kianisnotavailable/twitch_bot:latest
+    
 
   deploy:
     runs-on: ubuntu-latest
