@@ -5,7 +5,13 @@
         "name": "bot",
         "image": "kianisnotavailable/twitch_bot:latest",
         "essential": true,
-        "memory": 128
+        "memory": 128,
+        "portMappings": [
+          {
+            "hostPort": 80,
+            "containerPort": 80
+          }
+        ]
       }
     ]
   }
