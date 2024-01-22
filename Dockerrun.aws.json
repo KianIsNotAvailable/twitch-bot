@@ -1,19 +1,22 @@
 {
     "AWSEBDockerrunVersion": "1",
     "containerDefinitions": [
-      {
-        "name": "bot",
-        "image": "kianisnotavailable/twitch_bot:latest",
-        "essential": true,
-        "memory": 128,
-        "portMappings": [
-          {
-            "hostPort": 6667,
-            "containerPort": 6667
-          }
-        ]
-      }
+        {
+            "name": "bot",
+            "image": "kianisnotavailable/twitch_bot:latest",
+            "essential": true,
+            "memory": 128,
+            "portMappings": [
+                {
+                    "hostPort": 6667,
+                    "containerPort": 6667
+                }
+            ],
+            "Ports": [
+                {
+                    "containerPort": 6667
+                }
+            ]
+        }
     ]
-  }
-  
-  
+}    
