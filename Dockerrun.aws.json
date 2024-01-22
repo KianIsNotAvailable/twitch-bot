@@ -8,16 +8,16 @@
             "memory": 128,
             "portMappings": [
                 {
-                    "hostPort": 6667,
-                    "containerPort": 6667
+                    "hostPort": 80,
+                    "containerPort": 80
                 }
             ],
             "Ports": [
                 {
-                    "containerPort": 6667
+                    "containerPort": 80
                 }
             ]
         }
-        
+
     ]
 }    
