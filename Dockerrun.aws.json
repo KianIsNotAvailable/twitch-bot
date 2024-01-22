@@ -1,5 +1,5 @@
 {
-    "AWSEBDockerrunVersion": 1,
+    "AWSEBDockerrunVersion": "1",
     "containerDefinitions": [
       {
         "name": "bot",
@@ -8,8 +8,8 @@
         "memory": 128,
         "portMappings": [
           {
-            "hostPort": 80,
-            "containerPort": 80
+            "hostPort": 6667,
+            "containerPort": 6667
           }
         ]
       }
