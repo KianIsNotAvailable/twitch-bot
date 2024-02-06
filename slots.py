@@ -140,12 +140,12 @@ def spin(sender_username, points):
         else:
             update_points(sender_username, -points)
 
-# Helper function to update points in the database
+#function to update points in the database
 def update_points(username, points_change):
     cursor.execute('UPDATE user_data SET points = points + %s WHERE username = %s', (points_change, username))
     db_connection.commit()
 
-# Helper function to generate a random index
+# function to generate a random index
 def random_index():
     index = random.randint(0, len(combinations) - 1)
     return combinations[index]
