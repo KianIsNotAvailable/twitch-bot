@@ -37,7 +37,7 @@ irc.send(f'JOIN {channel}\r\n'.encode('utf-8'))
 
 # Connect to MySQL database
 db_connection = mysql.connector.connect(**db_config)
-cursor = db_connection.cursor()
+cursor = db_connection.cursor(buffered=True)
 
 # Function to execute when a message is received
 def on_message(user, msg):
@@ -56,13 +56,21 @@ def on_message(user, msg):
 
     # Add users to the database
     cursor.execute('SELECT COUNT(*) AS user_count FROM user_data WHERE username = %s', (sender_username,))
-    user_count = cursor.fetchone()[0]
+    user_count_row = cursor.fetchone()
+
+    # Check if user_count_row is None
+    if user_count_row is None:
+        print("No rows found")
+        return
+
+    user_count = user_count_row[0]
 
     # If the user is not in the database, insert them
     if user_count == 0:
         cursor.execute('INSERT INTO user_data (username) VALUES (%s)', (sender_username,))
         db_connection.commit()
         print(f"User {sender_username} added to the database.")
+
 
     # Commands
     if command_name == '!gift':
@@ -140,10 +148,19 @@ def spin(sender_username, points):
         else:
             update_points(sender_username, -points)
 
-#function to update points in the database
+
+# function to update points in the database
 def update_points(username, points_change):
-    cursor.execute('UPDATE user_data SET points = points + %s WHERE username = %s', (points_change, username))
-    db_connection.commit()
+    try:
+        if cursor:
+            cursor.execute('UPDATE user_data SET points = points + %s WHERE username = %s', (points_change, username))
+            db_connection.commit()
+        else:
+            print("Cursor is None")
+    except mysql.connector.Error as error:
+        print("Error updating points:", error)
+
+
 
 # function to generate a random index
 def random_index():
